@@ -110,8 +110,8 @@ def get_item(item_id: UUID, db: dbDependency) -> Task:
 
 
 # Route to update an item
-@app.patch("/api/items/{item_id}", response_model=Task, tags=["Task CRUD"])
-def update_item(item_id : UUID, update_task : UpdateTask, db : dbDependency)-> Task:
+@app.patch("/api/items/{item_title}", response_model=Task, tags=["Task CRUD"])
+def update_item(item_title : str, update_task : UpdateTask, db : dbDependency)-> Task:
     """
     Update an item in the database.
 
@@ -128,7 +128,7 @@ def update_item(item_id : UUID, update_task : UpdateTask, db : dbDependency)-> T
     
     """
     try:
-        return update_task_service(db, item_id, update_task)
+        return update_task_service(db, item_title, update_task)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     

@@ -1,4 +1,4 @@
-from fastapi import HTTPException
+from fastapi import HTTPException, status
 from api.data._db_config import engine
 from sqlmodel import Session, select
 from sqlalchemy.exc import SQLAlchemyError
@@ -13,14 +13,13 @@ Retrieves all data from the specified database session and returns a list of Tas
 
 Parameters:
 -db : Session -- The database session to retrieve data from.
-    
+
 Returns:
 - tasks : list[Task] -- A list of Task objects retrieved from the database session.
 """
-    with Session(engine) as session:
-        statement = select(Task)
-        tasks = session.exec(statement).all()
-        return list(tasks)
+    statement = select(Task)
+    tasks = db.exec(statement).all()
+    return list(tasks)
     
 def get_all_tasks_service(db: Session) -> list[Task]:
     """
@@ -47,12 +46,14 @@ Parameters:
 Returns:
 - task : Task -- A Task object retrieved from the database session.
 """
-    # with Session(engine) as session:
-    statement = select(Task).where(Task.id == id)
-    task = db.exec(statement).first()
-    if task is None:
-        raise HTTPException(status_code=404, detail="Task not found")
-    return task
+
+    item = db.get(Task, id)
+    if not item:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Task not found with id: {id}"
+        )
+    return item
 
 def get_single_task_service(db: Session, id: UUID) -> Task:
     """
@@ -105,7 +106,7 @@ Service to call create_task function and returns a Task object.
 
 
 #update a task
-def update_task_data(db: Session, id: UUID, task: UpdateTask) -> Task:
+def update_task_data(db: Session, title : str, task: UpdateTask) -> Task:
     """
 Updates an existing item in the specified database session and returns the updated Task object.
 
@@ -118,7 +119,8 @@ Returns:
 - Task: The updated Task object.
 """
     try:
-        statement = select(Task).where(Task.id == id)
+
+        statement = select(Task).where(Task.title == title)
         existing_task =db.exec(statement).first()
         if existing_task is None:
             raise HTTPException(status_code=404, detail="Task not found")
@@ -126,6 +128,7 @@ Returns:
         for key, value in task_data.items():
             if hasattr(existing_task, key):
                 setattr(existing_task, key, value)
+        db.add(existing_task)
         db.commit()
         db.refresh(existing_task)        
         return existing_task
@@ -138,12 +141,12 @@ Returns:
 
 
 #update a task service
-def update_task_service(db: Session, id: UUID, task: UpdateTask) -> Task:
+def update_task_service(db: Session, title : str, task: UpdateTask) -> Task:
     """
 Service to call update_task_data function and returns a Task object.
     """
     try:
-        return update_task_data(db, id, task)
+        return update_task_data(db, title, task)
     except Exception as e:
         print(f"Error updating task: {e}")
         raise

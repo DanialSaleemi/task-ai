@@ -22,5 +22,6 @@ class UpdateTask(SQLModel):
 # Database model for tasks, inherits base class (TaskBase)
 class Task(TaskBase, table=True):
     id: Optional[UUID] = Field(default_factory=uuid4, primary_key=True, index=True) 
+    # id: Optional[int] = Field(default_factory=int, primary_key=True, index=True)
     created_at: Optional[datetime] = Field(sa_column=Column(DateTime, server_default=func.now()))
     updated_at: Optional[datetime] = Field(sa_column=Column(DateTime, onupdate=func.now()))
