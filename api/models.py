@@ -6,7 +6,7 @@ from uuid import uuid4, UUID
 
 # Base class for tasks
 class TaskBase(SQLModel):
-    title: str = Field(index=True)
+    title: str = Field(index=True, unique=True)
     description: Union[str,None] = Field(nullable=True)
     completed: bool = Field(default=False)
 
@@ -25,3 +25,5 @@ class Task(TaskBase, table=True):
     # id: Optional[int] = Field(default_factory=int, primary_key=True, index=True)
     created_at: Optional[datetime] = Field(sa_column=Column(DateTime, server_default=func.now()))
     updated_at: Optional[datetime] = Field(sa_column=Column(DateTime, onupdate=func.now()))
+
+

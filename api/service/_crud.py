@@ -153,7 +153,7 @@ Service to call update_task_data function and returns a Task object.
 
 
 #delete a task
-def delete_task_data(db: Session, id: UUID) ->None:
+def delete_task_data(db: Session, title: str) ->None:
     """
 Deletes an item with given id from the specified database session.
 
@@ -165,7 +165,7 @@ Returns:
 - None
 """
     try:
-        statement = select(Task).where(Task.id == id)
+        statement = select(Task).where(Task.title == title)
         existing_task = db.exec(statement).first()
         if existing_task is None:
             raise HTTPException(status_code=404, detail="Task not found")
@@ -178,13 +178,13 @@ Returns:
         raise
 
 #delete a task service
-def delete_task_service(db: Session, id: UUID) -> None:
+def delete_task_service(db: Session, title: str) -> None:
     """
 Service to call delete_task_data function
         
     """
     try:
-        return delete_task_data(db, id)
+        return delete_task_data(db, title)
     except Exception as e:
         print(f"Error deleting task: {e}")
         raise HTTPException(status_code=500, detail=str(e))

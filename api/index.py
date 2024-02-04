@@ -1,13 +1,13 @@
 from fastapi import Body, Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.data._db_config import get_db, create_tables
+from api.data._db_config import get_db, create_tables, DB_URL
 from api.models import *
 from api.service._crud import *
 
 from sqlmodel import Session, select
 
-from typing import Annotated, List, Union
+from typing import Annotated
 
 
 
@@ -15,7 +15,17 @@ app = FastAPI(
     title='Task Genius',
     description='### An authenticated task management tool with __NextJS14__ Web Frontend App and Multi-User __Custom GPT__ action framework',
     docs_url='/api/docs',
-    openapi_url='/api/openapi.json'
+    openapi_url='/api/openapi.json',
+    servers=[
+                {
+                    'url': 'https://task-genius-genai.vercel.app/',
+                    'description': 'Production Server'
+                },
+                {
+                    'url' : 'http://localhost:3000',
+                    'description' : 'Development Server'
+                }
+            ],
     )
 
 app.add_middleware(
@@ -25,6 +35,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 dbDependency = Annotated[Session, Depends(get_db)]
 
@@ -133,21 +144,21 @@ def update_item(item_title : str, update_task : UpdateTask, db : dbDependency)->
         raise HTTPException(status_code=500, detail=str(e))
     
 # Route to delete an item
-@app.delete("/api/items/{item_id}", response_model=str, tags=["Task CRUD"])
-def delete_item(item_id: UUID, db:dbDependency) -> str:
+@app.delete("/api/items/{item_title}", response_model=str, tags=["Task CRUD"])
+def delete_item(item_title: str, db:dbDependency) -> str:
     """
-    Delete an item by its ID from the database and return a success message.
+    Delete an item by its title from the database and return a status message.
 
     Parameters:
-    - item_id: UUID - The ID of the item to be deleted.
+    - item_title: str - Title of the item to be deleted.
     - db: dbDependency - The database dependency.
 
     Returns:
-    - str - A success message indicating the deletion of the item with the specified ID.
+    - str - A success message or the error message.
     """
     try:
-        delete_task_service(db, item_id)
-        return(f"item with id: {item_id} deleted succesfully")
+        delete_task_service(db, item_title)
+        return(f"{item_title} deleted succesfully")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
