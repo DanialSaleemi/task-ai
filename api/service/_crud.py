@@ -120,19 +120,21 @@ Returns:
 - Task: The updated Task object.
 """
     try:
+        db.get(Task, title)
         statement = select(Task).where(func.lower(func.trim(Task.title)) == func.lower(func.trim(title)))
         existing_task = db.exec(statement).first()
-        if existing_task is None:
+        if existing_task is not None:
+            task_data = task.model_dump(exclude_unset=True)
+            for key, value in task_data.items():
+                if hasattr(existing_task, key):
+                    setattr(existing_task, key, value)
+            db.add(existing_task)
+            db.commit()
+            db.refresh(existing_task)        
+            return existing_task
+        else:
             raise HTTPException(status_code=404, detail="Task not found")
-        task_data = task.model_dump(exclude_unset=True)
-        for key, value in task_data.items():
-            if hasattr(existing_task, key):
-                setattr(existing_task, key, value)
-        db.add(existing_task)
-        db.commit()
-        db.refresh(existing_task)        
 
-        return existing_task
     
     except SQLAlchemyError as e:
         #rollback if error occurs
