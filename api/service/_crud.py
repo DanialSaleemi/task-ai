@@ -1,3 +1,4 @@
+from typing import Awaitable
 from fastapi import HTTPException, status
 from api.data._db_config import engine
 from sqlmodel import Session, select
@@ -35,7 +36,7 @@ Service to call get_all_data function and returns a list of Task objects.
         raise
 
 #get single item
-def get_single_item(db: Session, id: UUID) -> Task:
+async def get_single_item(db: Session, id: UUID) -> Task:
     """
 Retrieves a single item from the specified database session and returns a Task object.
 
@@ -55,13 +56,13 @@ Returns:
         )
     return item
 
-def get_single_task_service(db: Session, id: UUID) -> Task:
+async def get_single_task_service(db: Session, id: UUID) -> Task:
     """
 Service to call get_single_item function and returns a Task object.
 
     """
     try:
-        get_task : Task = get_single_item(db, id)
+        get_task : Task = await get_single_item(db, id)
         return Task.model_validate(get_task)
     except Exception as e:
         print(f"Error getting single task: {e}")
@@ -106,7 +107,7 @@ Service to call create_task function and returns a Task object.
 
 
 #update a task
-def update_task_data(db: Session, title : str, task: UpdateTask) -> Task:
+async def update_task_data(db: Session, title : str, task: UpdateTask) -> Task:
     """
 Updates an existing item in the specified database session and returns the updated Task object.
 
@@ -120,7 +121,7 @@ Returns:
 """
     try:
         statement = select(Task).where(func.lower(func.trim(Task.title)) == func.lower(func.trim(title)))
-        existing_task =db.exec(statement).first()
+        existing_task = db.exec(statement).first()
         if existing_task is None:
             raise HTTPException(status_code=404, detail="Task not found")
         task_data = task.model_dump(exclude_unset=True)
@@ -130,6 +131,7 @@ Returns:
         db.add(existing_task)
         db.commit()
         db.refresh(existing_task)        
+
         return existing_task
     
     except SQLAlchemyError as e:
@@ -140,19 +142,19 @@ Returns:
 
 
 #update a task service
-def update_task_service(db: Session, title : str, task: UpdateTask) -> Task:
+async def update_task_service(db: Session, title : str, task: UpdateTask) -> Task:
     """
 Service to call update_task_data function and returns a Task object.
     """
     try:
-        return update_task_data(db, title, task)
+        return await update_task_data(db, title, task)
     except Exception as e:
         print(f"Error updating task: {e}")
         raise
 
 
 #delete a task
-def delete_task_data(db: Session, title: str) ->None:
+async def delete_task_data(db: Session, title: str) ->None:
     """
 Deletes an item with given id from the specified database session.
 
@@ -177,13 +179,13 @@ Returns:
         raise
 
 #delete a task service
-def delete_task_service(db: Session, title: str) -> None:
+async def delete_task_service(db: Session, title: str) -> None:
     """
 Service to call delete_task_data function
         
     """
     try:
-        return delete_task_data(db, title)
+        return await delete_task_data(db, title)
     except Exception as e:
         print(f"Error deleting task: {e}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -100,7 +100,7 @@ def get_all_items(db: dbDependency):
     
 # Route to get a specific item by ID
 @app.get("/api/items/{item_id}", response_model=TaskBase, tags=["Task CRUD"])
-def get_item(item_id: UUID, db: dbDependency) -> Task:
+async def get_item(item_id: UUID, db: dbDependency) -> Task:
     """
     Get an item by its item_id from the database.
     
@@ -115,14 +115,14 @@ def get_item(item_id: UUID, db: dbDependency) -> Task:
     - HTTPException with status code 500 and the exception detail if an error occurs
     """
     try:
-        return get_single_task_service(db, item_id)
+        return await get_single_task_service(db, item_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
 # Route to update an item
 @app.patch("/api/items/{item_title}", response_model=Task, tags=["Task CRUD"])
-def update_item(item_title : str, update_task : UpdateTask, db : dbDependency)-> Task:
+async def update_item(item_title : str, update_task : UpdateTask, db : dbDependency)-> Task:
     """
     Update an item in the database.
 
@@ -139,13 +139,13 @@ def update_item(item_title : str, update_task : UpdateTask, db : dbDependency)->
     
     """
     try:
-        return update_task_service(db, item_title, update_task)
+        return await update_task_service(db, item_title, update_task)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 # Route to delete an item
 @app.delete("/api/items/{item_title}", response_model=str, tags=["Task CRUD"])
-def delete_item(item_title: str, db:dbDependency) -> str:
+async def delete_item(item_title: str, db:dbDependency) -> str:
     """
     Delete an item by its title from the database and return a status message.
 
@@ -157,7 +157,7 @@ def delete_item(item_title: str, db:dbDependency) -> str:
     - str - A success message or the error message.
     """
     try:
-        delete_task_service(db, item_title)
+        await delete_task_service(db, item_title)
         return(f"{item_title} deleted succesfully")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
