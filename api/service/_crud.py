@@ -120,7 +120,7 @@ Returns:
 - Task: The updated Task object.
 """
     try:
-        db.get(Task, title)
+        # db.get(Task, title)
         statement = select(Task).where(func.lower(func.trim(Task.title)) == func.lower(func.trim(title)))
         existing_task = db.exec(statement).first()
         if existing_task is not None:
