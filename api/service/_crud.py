@@ -119,8 +119,7 @@ Returns:
 - Task: The updated Task object.
 """
     try:
-
-        statement = select(Task).where(Task.title == title)
+        statement = select(Task).where(func.lower(Task.title) == title.lower())
         existing_task =db.exec(statement).first()
         if existing_task is None:
             raise HTTPException(status_code=404, detail="Task not found")
@@ -165,7 +164,7 @@ Returns:
 - None
 """
     try:
-        statement = select(Task).where(Task.title == title)
+        statement = select(Task).where(func.lower(Task.title) == title.lower())
         existing_task = db.exec(statement).first()
         if existing_task is None:
             raise HTTPException(status_code=404, detail="Task not found")
