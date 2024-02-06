@@ -120,8 +120,10 @@ Returns:
 - Task: The updated Task object.
 """
     try:
-        # db.get(Task, title)
-        statement = select(Task).where(func.lower(func.trim(Task.title)) == func.lower(func.trim(title)))
+        title = title.lower().strip()
+        print(f'the input title is {title}')
+
+        statement = select(Task).where(func.lower(func.trim(Task.title)) == title)
         existing_task = db.exec(statement).first()
         if existing_task is not None:
             task_data = task.model_dump(exclude_unset=True)
@@ -167,8 +169,13 @@ Parameters:
 Returns:
 - None
 """
+    
     try:
-        statement = select(Task).where(func.lower(func.trim(Task.title)) == func.lower(func.trim(title)))
+
+        title = title.lower().strip()
+        print(f'the input title is {title}')
+        
+        statement = select(Task).where(func.lower(func.trim(Task.title)) == title)
         existing_task = db.exec(statement).first()
         if existing_task is None:
             raise HTTPException(status_code=404, detail="Task not found")
