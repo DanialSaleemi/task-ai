@@ -8,7 +8,7 @@ from api.models import *
 from uuid import UUID
 
 #get all items
-def get_all_data(db: Session) -> list[Task]:
+async def get_all_data(db: Session) -> list[Task]:
     """
 Retrieves all data from the specified database session and returns a list of Task objects.
 
@@ -22,14 +22,14 @@ Returns:
     tasks = db.exec(statement).all()
     return list(tasks)
     
-def get_all_tasks_service(db: Session) -> list[Task]:
+async def get_all_tasks_service(db: Session) -> list[Task]:
     """
 Service to call get_all_data function and returns a list of Task objects.
 
     """
     
     try:
-        get_tasks : list[Task] = get_all_data(db)
+        get_tasks : list[Task] = await get_all_data(db)
         return [Task.model_validate(task) for task in get_tasks]
     except Exception as e:
         print(f"Error getting all tasks: {e}")
@@ -107,7 +107,7 @@ Service to call create_task function and returns a Task object.
 
 
 #update a task
-async def update_task_data(db: Session, title : str, task: UpdateTask) -> Task:
+async def update_task_data(db: Session, id : UUID, task: UpdateTask) -> Task:
     """
 Updates an existing item in the specified database session and returns the updated Task object.
 
@@ -120,10 +120,11 @@ Returns:
 - Task: The updated Task object.
 """
     try:
-        title = title.lower().strip()
-        print(f'the input title is {title}')
+        # title = title.lower().strip()
+        # print(f'the input title is {title}')
 
-        statement = select(Task).where(func.lower(func.trim(Task.title)) == title)
+        # statement = select(Task).where(func.lower(func.trim(Task.title)) == title)
+        statement = select(Task).where((Task.id) == id)
         existing_task = db.exec(statement).first()
         if existing_task is not None:
             task_data = task.model_dump(exclude_unset=True)
@@ -146,19 +147,19 @@ Returns:
 
 
 #update a task service
-async def update_task_service(db: Session, title : str, task: UpdateTask) -> Task:
+async def update_task_service(db: Session, id : UUID, task: UpdateTask) -> Task:
     """
 Service to call update_task_data function and returns a Task object.
     """
     try:
-        return await update_task_data(db, title, task)
+        return await update_task_data(db, id, task)
     except Exception as e:
         print(f"Error updating task: {e}")
         raise
 
 
 #delete a task
-async def delete_task_data(db: Session, title: str) ->None:
+async def delete_task_data(db: Session, id: UUID) ->None:
     """
 Deletes an item with given id from the specified database session.
 
@@ -172,10 +173,11 @@ Returns:
     
     try:
 
-        title = title.lower().strip()
-        print(f'the input title is {title}')
+        # title = title.lower().strip()
+        # print(f'the input title is {title}')
         
-        statement = select(Task).where(func.lower(func.trim(Task.title)) == title)
+        # statement = select(Task).where(func.lower(func.trim(Task.title)) == title)
+        statement = select(Task).where(Task.id == id)
         existing_task = db.exec(statement).first()
         if existing_task is None:
             raise HTTPException(status_code=404, detail="Task not found")
@@ -188,13 +190,13 @@ Returns:
         raise
 
 #delete a task service
-async def delete_task_service(db: Session, title: str) -> None:
+async def delete_task_service(db: Session, id: UUID) -> None:
     """
 Service to call delete_task_data function
         
     """
     try:
-        return await delete_task_data(db, title)
+        return await delete_task_data(db, id)
     except Exception as e:
         print(f"Error deleting task: {e}")
         raise HTTPException(status_code=500, detail=str(e))

@@ -1,6 +1,7 @@
 from typing import Optional, Union
 from sqlmodel import Field, SQLModel, Column, TIMESTAMP, text, DateTime, func
 from datetime import datetime
+from pydantic import ConfigDict
 
 from uuid import uuid4, UUID
 
@@ -9,6 +10,9 @@ class TaskBase(SQLModel):
     title: str = Field(index=True, unique=True)
     description: Union[str,None] = Field(nullable=True)
     completed: bool = Field(default=False)
+
+    class Config:
+        orm_mode = True
 
 class CreateTask(TaskBase):
     pass
@@ -27,3 +31,5 @@ class Task(TaskBase, table=True):
     updated_at: Optional[datetime] = Field(sa_column=Column(DateTime, onupdate=func.now()))
 
 
+class TaskResponse(TaskBase):
+    id: UUID

@@ -67,7 +67,7 @@ async def create_item(task: CreateTask, db: dbDependency):
     - the result of creating the task
 
     Raises:
-    - HTTPException with status code 500 and the exception detail if an error occurs
+    - HTTPException with status code
     """
     try:
         # Call the create_task_service function with the given database session and task
@@ -77,8 +77,8 @@ async def create_item(task: CreateTask, db: dbDependency):
         raise HTTPException(status_code=500, detail=str(e))
     
 # Route to get all task items
-@app.get("/api/items", response_model=list[TaskBase], tags=["Task CRUD"])
-def get_all_items(db: dbDependency):
+@app.get("/api/items", response_model=list[TaskResponse], tags=["Task CRUD"])
+async def get_all_items(db: dbDependency) -> list[Task]:
     """
     Retrieves all task items from the database.
 
@@ -91,15 +91,15 @@ def get_all_items(db: dbDependency):
     - The result of the get all tasks service
     
     Raises:
-    - HTTPException with status code 500 and the exception detail if an error occurs
+    - HTTPException with status code
     """
     try:
-        return get_all_tasks_service(db)
+        return await get_all_tasks_service(db)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 # Route to get a specific item by ID
-@app.get("/api/items/{item_id}", response_model=TaskBase, tags=["Task CRUD"])
+@app.get("/api/items/{item_id}", response_model=TaskResponse, tags=["Task CRUD"])
 async def get_item(item_id: UUID, db: dbDependency) -> Task:
     """
     Get an item by its item_id from the database.
@@ -112,7 +112,7 @@ async def get_item(item_id: UUID, db: dbDependency) -> Task:
     - Task - The retrieved item.
 
     Raises:
-    - HTTPException with status code 500 and the exception detail if an error occurs
+    - HTTPException with status code
     """
     try:
         return await get_single_task_service(db, item_id)
@@ -121,8 +121,8 @@ async def get_item(item_id: UUID, db: dbDependency) -> Task:
 
 
 # Route to update an item
-@app.patch("/api/items/{item_title}", response_model=Task, tags=["Task CRUD"])
-async def update_item(item_title : str, update_task : UpdateTask, db : dbDependency)-> Task:
+@app.patch("/api/items/{item_id}", response_model=TaskResponse, tags=["Task CRUD"])
+async def update_item(item_id : str, update_task : UpdateTask, db : dbDependency)-> Task:
     """
     Update an item in the database.
 
@@ -135,17 +135,17 @@ async def update_item(item_title : str, update_task : UpdateTask, db : dbDepende
     - Task: The updated task.
 
     Raises:
-    - HTTPException with status code 500 and the exception detail if an error occurs
+    - HTTPException with status code
     
     """
     try:
-        return await update_task_service(db, item_title, update_task)
+        return await update_task_service(db, UUID(item_id), update_task)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 # Route to delete an item
-@app.delete("/api/items/{item_title}", response_model=str, tags=["Task CRUD"])
-async def delete_item(item_title: str, db:dbDependency) -> str:
+@app.delete("/api/items/{item_id}", response_model=str, tags=["Task CRUD"])
+async def delete_item(item_id: str, db:dbDependency) -> str:
     """
     Delete an item by its title from the database and return a status message.
 
@@ -157,8 +157,8 @@ async def delete_item(item_title: str, db:dbDependency) -> str:
     - str - A success message or the error message.
     """
     try:
-        await delete_task_service(db, item_title)
-        return(f"{item_title} deleted succesfully")
+        await delete_task_service(db, UUID(item_id))
+        return(f"{item_id} deleted succesfully")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
