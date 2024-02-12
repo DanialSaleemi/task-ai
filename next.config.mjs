@@ -10,20 +10,6 @@ const nextConfig = {
                     : '/api/',
             },
         ];
-    },
-    async headers() {
-        return [
-            {
-                // matching all API routes
-                source: "/api/:path*",
-                headers: [
-                    {key: "Access-Control-Allow-Credentials", value: "true"},
-                    {key: "Access-Control-Allow-Origin", value: "*"},
-                    {key: "Access-Control-Allow-Methods", value: "*"},
-                    {key: "Access-Control-Allow-Headers", value: "x-CSRF-Token, X-Requested-with, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date,  X-Api-Version"},
-                ]
-            }
-        ]
     }
 };
 
