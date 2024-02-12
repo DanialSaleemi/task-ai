@@ -2,7 +2,7 @@ from sqlmodel import SQLModel, create_engine, Session
 from dotenv import load_dotenv, find_dotenv
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
 
-from api.models import Task
+from api._models import Task
 
 import os
 import time

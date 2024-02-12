@@ -4,7 +4,7 @@ from api.data._db_config import engine
 from sqlmodel import Session, select
 from sqlalchemy.exc import SQLAlchemyError
 
-from api.models import *
+from api._models import *
 from uuid import UUID
 
 #get all items

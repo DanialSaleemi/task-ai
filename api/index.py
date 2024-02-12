@@ -2,7 +2,7 @@ from fastapi import Body, Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.data._db_config import get_db, create_tables, DB_URL
-from api.models import *
+from api._models import *
 from api.service._crud import *
 
 from sqlmodel import Session, select
@@ -54,7 +54,7 @@ def health_check():
 
 
 # Route to create a new task item
-@app.post("/api/items", status_code=201, response_model=CreateTask, tags=["Task CRUD"])
+@app.post("/api/items", status_code=201, response_model=TaskResponse, tags=["Task CRUD"])
 async def create_item(task: CreateTask, db: dbDependency):
     """
     Create a new item in the database.
@@ -178,8 +178,6 @@ def delete_all_items(db: dbDependency) -> str:
         return(f"{rows_deleted} items deleted succesfully")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-
 
 
 
