@@ -17,6 +17,8 @@ const URL = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api`
   : "http://localhost:3000/api";
 
+
+console.log(URL)
 const TaskComponents = () => {
   const [todos, setTodos] = useState<TaskItem[]>([]);
   const [newTodo, setNewTodo] = useState("");
@@ -43,7 +45,6 @@ const TaskComponents = () => {
   };
 
   const updateTodo = (id: UUID) => {
-
     // Update the state to reflect loading for the specific task being updated
     setTodos(
       todos.map((todo) =>
@@ -80,8 +81,8 @@ const TaskComponents = () => {
         setTodoCompleted(!setTodoCompleted);
         console.log("Item updated succesfully", response.data);
       })
-      .catch((error) => console.error(error))
-      // .finally(() => (setIsLoading(false)))
+      .catch((error) => console.error(error));
+    // .finally(() => (setIsLoading(false)))
   };
   const deleteTodo = (id: UUID) => {
     axios
@@ -102,7 +103,9 @@ const TaskComponents = () => {
       .catch((error) => console.error(error));
   };
   return (
-    <div className="space-x-2 bg-gradient-to-r from-white to-blue-100 rounded-lg w-1/2">
+    <div
+      className="space-x-2 w-1/2"
+    >
       <h2 className="text-6xl py-12 font-extrabold text-[#24194d] text-opacity-70 tracking-wider">
         Task Genius AI
       </h2>
@@ -123,10 +126,15 @@ const TaskComponents = () => {
       <div className="flex flex-col ">
         <div className=" space-y-4 py-6">
           {todos.map((todo) => (
-            <div key={todo.id} className="flex space-x-6 items-center border-b-2">
+            <div
+              key={todo.id}
+              className="flex space-x-6 items-center"
+            >
               <div
                 className={`flex basis-10/12 bg-gradient-to-l from-slate-300/30 to-slate-100/10 border-blue-200/20 text-lg text-[#333333] shadow-md border-2 rounded-md py-6 px-2 ${
-                  todo.completed ? "text-green-800 bg-green-50 font-light" : "font-normal"
+                  todo.completed
+                    ? "text-green-800 bg-green-400/50 font-light"
+                    : "font-normal"
                 }`}
               >
                 {todo.title}
@@ -141,8 +149,7 @@ const TaskComponents = () => {
                 />
               ) : (
                 <BiLoader size={30} />
-              ) 
-            }
+              )}
               <MdDelete size={30} onClick={() => deleteTodo(todo.id)} />
             </div>
           ))}
