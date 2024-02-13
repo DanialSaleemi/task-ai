@@ -14,7 +14,7 @@ interface TaskItem {
 }
 
 const URL = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api`
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api` || `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
   : "http://localhost:3000/api";
 
 axios.defaults.withCredentials = true
@@ -126,9 +126,12 @@ const TaskComponents = () => {
       </button>
       <div className="flex flex-col ">
         <div className=" space-y-4 py-6">
-          {todos.map((todo) => (
+          {todos.sort((a,b) => {
+            return a.completed === b.completed ? b.index - a.index : a.completed ? 1 : -1;
+          })
+          .map((todo) => (
             <div
-              key={todo.id}
+              key={todo.index}
               className="flex space-x-6 items-center"
             >
               <div
