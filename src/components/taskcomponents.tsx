@@ -17,6 +17,7 @@ const URL = process.env.NEXT_PUBLIC_VERCEL_URL
   ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api`
   : "http://localhost:3000/api";
 
+axios.defaults.withCredentials = true
 
 console.log(URL)
 const TaskComponents = () => {
@@ -28,7 +29,7 @@ const TaskComponents = () => {
   // Fetch ToDo items on component mount
   useEffect(() => {
     axios
-      .get(`${URL}/items`)
+      .get(`${URL}/items`, { withCredentials : true })
       .then((response) => setTodos(response.data))
       .catch((error) => console.error(error));
   }, []);
