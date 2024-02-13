@@ -20,7 +20,7 @@ const URL = process.env.NEXT_PUBLIC_VERCEL_URL
     `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
   : "http://localhost:3000/api";
 
-axios.defaults.withCredentials = true;
+// axios.defaults.withCredentials = true;
 
 const TaskComponents = () => {
   const [todos, setTodos] = useState<TaskItem[]>([]);
@@ -35,7 +35,8 @@ const TaskComponents = () => {
     // Fetch ToDo items on component mount
 
     axios
-      .get(`${URL}/items`, { withCredentials: true})
+      // .get(`${URL}/items`, { withCredentials: true})
+      .get(`${URL}/items`)
       .then((response) => setTodos(response.data))
       .catch((error) => console.error(error));
   };
