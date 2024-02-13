@@ -35,7 +35,7 @@ const TaskComponents = () => {
     // Fetch ToDo items on component mount
 
     axios
-      .get(`${URL}/items`, { withCredentials: true })
+      .get(`${URL}/items`, { withCredentials: true, headers: {"credentials": "include"} })
       .then((response) => setTodos(response.data))
       .catch((error) => console.error(error));
   };
