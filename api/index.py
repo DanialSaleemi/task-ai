@@ -54,7 +54,7 @@ def health_check():
 
 
 # Route to create a new task item
-@app.post("/api/items", status_code=201, response_model=TaskResponse, tags=["Task CRUD"])
+@app.post("/api/items", status_code=201, response_model=Task, tags=["Task CRUD"])
 async def create_item(task: CreateTask, db: dbDependency):
     """
     Create a new item in the database.
@@ -77,7 +77,7 @@ async def create_item(task: CreateTask, db: dbDependency):
         raise HTTPException(status_code=500, detail=str(e))
     
 # Route to get all task items
-@app.get("/api/items", response_model=list[TaskResponse], tags=["Task CRUD"])
+@app.get("/api/items", response_model=list[Task], tags=["Task CRUD"])
 async def get_all_items(db: dbDependency) -> list[Task]:
     """
     Retrieves all task items from the database.
