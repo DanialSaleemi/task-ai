@@ -1,29 +1,35 @@
 "use client";
-import React from "react";
-import axios from "axios";
-import { useState } from "react";
-import { BaseURL, TaskItem } from "./taskcomponents";
+import React, { useState } from "react";
+import { addItem } from "@/utils/crud";
+import { TaskItem } from "./taskcomponents";
+import { stringify } from "querystring";
 
-const AddTask = () => {
+
+
+interface AddTaskProps {
+  onAdd: (newTask: TaskItem) => void; // Define the type for the onAdd prop
+}
+const AddTask = ( { onAdd } : AddTaskProps ) => {
   const [newTodo, setNewTodo] = useState("");
-  const [todos, setTodos] = useState<TaskItem[]>([]);
 
-  const addTodo = () => {
-    axios
-      .post<TaskItem>(`${BaseURL}/items`, { title: newTodo })
+
+  const handleAddItem = () => {
+
+    addItem(newTodo)         // use the addItem function from crud
       .then((response) => {
-        console.log(response);
-        setTodos([...todos, response.data]);
-        setNewTodo("");
+        onAdd(response.data); // call the onAdd callback with the new task
+        setNewTodo(""); // Clear the input field
       })
       .catch((error) => console.error(error));
   };
 
+
   return (
     <div className="space-x-2 md:space-x-4 py-10">
       <input
-        name="task title"
-        id="task1"
+        name="item-title-name"
+        aria-label="item-title-label"
+        id="taskid"
         type="text"
         value={newTodo}
         onChange={(e) => setNewTodo(e.target.value)}
@@ -31,7 +37,7 @@ const AddTask = () => {
       />
       <button
         className="bg-[#43766C] hover:ring-1 text-white text-lg font-semibold p-2 rounded"
-        onClick={addTodo}
+        onClick={handleAddItem}
       >
         Add Item
       </button>
