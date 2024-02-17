@@ -18,14 +18,14 @@ import Image from "next/image";
 const Carousel = () => {
   // Tech Stack logos
   const items: string[] = [
+    "/next.svg",
+    "/tailwindcss-logotype.svg",
     "/axios.svg",
-    "/neon.svg",
     "/python-logo-generic.svg",
     "/fastapi.svg",
-    "/sqlmodel.svg",
     "/openai-lockup.svg",
-    "/tailwindcss-logotype.svg",
-    "/next.svg",
+    "/sqlmodel.svg",
+    "/neon.svg",
     "/vercel.svg",
   ];
   return (
