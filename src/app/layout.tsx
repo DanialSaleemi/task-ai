@@ -4,7 +4,7 @@ import "./globals.css";
 
 // const inter = Inter({ subsets: ["latin"] });
 // const roboto = Roboto_Serif({ subsets: ['latin'] })
-const mat = Josefin_Sans({ subsets: ['latin'] })
+const mat = Josefin_Sans({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "TaskGenius AI - Elevate Your Productivity",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
                 you to focus on what truly matters. 
                 Join us and unlock the full potential of your productivity.`,
 
-  keywords: `TaskGenius AI, AI task management, productivity tool, automate tasks, efficient workflow, CRUD operations, real-time updates, user-friendly interface, advanced AI, CustomGPT, LLM, task automation.`
+  keywords: `TaskGenius AI, AI task management, productivity tool, automate tasks, efficient workflow, CRUD operations, real-time updates, user-friendly interface, advanced AI, CustomGPT, LLM, task automation.`,
 };
 
 export default function RootLayout({
@@ -28,7 +28,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={mat.className}>{children}</body>
+      <body className={mat.className}>
+          {children}
+      </body>
     </html>
   );
 }
