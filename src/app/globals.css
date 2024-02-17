@@ -31,3 +31,16 @@ body {
     text-wrap: balance;
   }
 }
+
+@keyframes slide {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-130%);
+  }
+}
+
+.animate-slide {
+  animation: slide 30s linear infinite;
+}
