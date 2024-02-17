@@ -188,8 +188,9 @@ const handleDeleteAllItems = async () => {
         </p>
       )}
       <button
-        className="bg-[#3f7cc2d4] hover:ring-1 text-white text-lg font-semibold p-2 rounded"
+        className="bg-violet-900/60 hover:ring-1 text-white text-lg font-semibold p-2 rounded"
         onClick={handleDeleteAllItems}
+        title="Delete all tasks"
       >
         Delete All
       </button>
