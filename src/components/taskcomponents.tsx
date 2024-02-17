@@ -5,12 +5,10 @@ import { useState, useEffect } from "react";
 import { MdDelete } from "react-icons/md";
 import { UUID } from "crypto";
 import { BiLoader, BiRefresh } from "react-icons/bi";
-import Image from "next/image";
-import Link from "next/link";
-import AddTask from "./addtaskform";
+// import AddTask from "./addtaskform";
 import {
   fetchItems,
-  addItem,
+  // addItem,
   updateItem,
   deleteItem,
   deleteAllItems,
@@ -37,7 +35,7 @@ const TaskComponents = () => {
   const [isLoading, setIsLoading] = useState(true);
   // Fetch ToDo items on component mount
   useEffect(() => {
-    fetchItems()
+     fetchItems()
       .then((response) => {
         const sortedList = response.data.sort((a: { created_at: Date; }, b: { created_at: Date; }) => {
           const dateA = new Date(a.created_at || 0);
@@ -50,11 +48,23 @@ const TaskComponents = () => {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const handleAddItem = (newItem: TaskItem) => {
+  /**
+   * Add a new item to the todos list.
+   *
+   * @param {TaskItem} newItem - the new item to be added
+   * @return {void} 
+   */
+  const handleAddItem = async (newItem: TaskItem) => {
     setTodos([...todos, newItem]);
   };
 
-  const handleUpdateItems = (id: UUID) => {
+  /**
+   * A function to handle the update of items.
+   *
+   * @param {UUID} id - the unique identifier of the item to be updated
+   * @return {void} no return value
+   */
+  const handleUpdateItems = async (id: UUID) => {
     // update Loading state for the specified task
     setTodos(
       todos.map((todo) =>
@@ -79,8 +89,9 @@ const TaskComponents = () => {
       completed: !taskToUpdate.completed,
     };
 
+
     // pass updateData and id to Axios request
-    updateItem(id, updateData)
+    await updateItem(id, updateData)
       .then((response) => {
         setTodos(
           todos.map((todo) =>
@@ -95,22 +106,26 @@ const TaskComponents = () => {
   };
 
   // delete an item
-  const handleDeleteItem = (id: UUID) => {
-    deleteItem(id)
+  const handleDeleteItem = async (id: UUID) => {
+    await deleteItem(id)
       .then(() => {
         setTodos(todos.filter((todo) => todo.id !== id));
       })
       .catch((error) => console.error(error));
   };
 
-  // delete all items
-  const handleDeleteAllItems = () => {
-    deleteAllItems()
-      .then(() => {
-        setTodos([]);
-      })
-      .catch((error) => console.error(error));
-  };
+// Function to delete all items
+const handleDeleteAllItems = async () => {
+  try {
+    // Call the deleteAllItems function
+    await deleteAllItems();
+    // Set the todos state to an empty array
+    setTodos([]);
+  } catch (error) {
+    // Log any errors to the console
+    console.error(error);
+  }
+};
 
   const sortedList = todos.sort((a, b) => {
     const dateA = new Date(a.created_at || 0);
@@ -119,61 +134,22 @@ const TaskComponents = () => {
   });
   console.log(sortedList);
   return (
-    <div className="p-4 w-full lg:w-1/2 mt-8 space-x-2">
+    <div className="flex items-center justify-center">
+
+    
+    <div className="w-full lg:w-1/2 mt-8 space-x-2">
       <BiRefresh
         title="Refresh list"
         size={30}
         onClick={fetchItems}
         className="absolute right-0 top-0"
       />
-      <div className="flex items-start justify-around">
-        <div>
-          <h1 className="text-3xl lg:text-6xl font-extrabold text-[#3e2890] text-opacity-70 tracking-wider">
-            Task Genius AI
-          </h1>
-          <p className="font-extralight text-violet-800">
-            Generative Genius: Transform Your Daily activities with AI-Driven
-            Action!
-          </p>
-        </div>
-        <Link
-          href={"https://chat.openai.com/g/g-pRFPHnbZb-taskgenius"}
-          target="_blank"
-          title="Open custom ChatGPT interface for Task Genius"
-        >
-          <Image
-            src="/logo.png"
-            alt="logo"
-            loading="lazy"
-            style={{
-              width: "80%",
-              height: "auto",
-            }}
-            width={75}
-            height={75}
-          />
-        </Link>
-      </div>
+      
 
-      <AddTask onAdd={handleAddItem} />
+      {/* <AddTask onAdd={handleAddItem} /> */}
 
       <div className="flex flex-col ">
         <div className=" space-y-4 py-6">
-          {/* {todos
-            .sort((a, b) => {
-
-              // Convert created_at strings to Date objects, handling undefined or null values
-              const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
-              const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
-               
-              // Compare the timestamps
-                return dateB.getTime() - dateA.getTime() || (a.completed === b.completed
-                ? 0
-                : a.completed
-                ? 1
-                : -1  )
-}); */}
-
           {sortedList.map((todo) => (
             <div key={todo.id} className="flex space-x-6 items-center">
               <div
@@ -217,6 +193,7 @@ const TaskComponents = () => {
       >
         Delete All
       </button>
+    </div>
     </div>
   );
 };
