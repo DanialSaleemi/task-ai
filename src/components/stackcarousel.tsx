@@ -18,45 +18,45 @@ import Image from "next/image";
 const Carousel = () => {
   // Tech Stack logos
   const items: string[] = [
-    "/neon-logo.png",
     "/axios.svg",
-    "/fastapi-logo.png",
+    "/neon.svg",
+    "/python-logo-generic.svg",
+    "/fastapi.svg",
     "/sqlmodel.svg",
-    "/pythonlogo.png",
-    "/Openai_Logo.png",
-    "/TailwindCSS-logo.png",
+    "/openai-lockup.svg",
+    "/tailwindcss-logotype.svg",
     "/next.svg",
     "/vercel.svg",
   ];
   return (
     <div className="flex items-center min-h-[80px]">
       <div className="relative overflow-hidden">
-        <div className="absolute inset-0 z-5">
-          <p className="text-center text-xl md:text-2xl lg:text-3xl text-slate-400/70 font-bold tracking-widest">
+        <div className="absolute py-6 inset-0 z-5 items-center">
+          <p className="text-center items-text-xl md:text-2xl lg:text-3xl text-slate-400/70 font-bold tracking-widest">
             Technology Stack
           </p>
         </div>
           <div className="whitespace-nowrap animate-slide flex items-center z-20">
             {items.map((item, index) => (
-              <div key={index} className="inline-flex py-2 px-4 min-w-[80px]">
+              <div key={index} className="inline-flex py-2 px-4 min-h-[80px] min-w-[80px]">
                 <Image
                   src={item}
                   alt={`Tech ${index + 1}`}
-                  width={100}
-                  height={100}
+                  width={200}
+                  height={200}
                 />
               </div>
             ))}
             {items.map((item, index) => (
               <div
                 key={`copy-${index}`}
-                className="inline-flex py-2 px-4 min-w-[80px]"
+                className="inline-flex py-2 px-4 min-h-[80px] min-w-[80px]"
               >
                 <Image
                   src={item}
                   alt={`Tech ${index + 1}`}
-                  width={100}
-                  height={100}
+                  width={200}
+                  height={200}
                 />
               </div>
             ))}
