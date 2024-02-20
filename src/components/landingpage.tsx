@@ -1,15 +1,29 @@
 import React from "react";
-import Carousel from "./stackcarousel";
-import TaskComponents from "./taskcomponents";
+import TaskComponents, { TaskItem } from "./taskcomponents";
 import Link from "next/link";
 import Image from "next/image";
+import axios from "axios";
 
-const LandingPage = () => {
+async function getStaticProps() {
+  const backend_URL = process.env.NEXT_PUBLIC_VERCEL_URL
+  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api` ||
+    `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
+  : "http://localhost:3000/api";
+  const { data } = await axios.get(`${backend_URL}/items`)
+  const sortedList : TaskItem[] = data.sort((a : TaskItem, b : TaskItem) => {
+    const dateA = new Date(a.created_at || 0);
+    const dateB = new Date(b.created_at || 0);
+    return dateB.getTime() - dateA.getTime();
+  });
+  return { props: { items : sortedList, },
+revalidate: 25 };
+} 
+
+const LandingPage = async () => {
+
+const listItems = (await getStaticProps()).props.items;
   return (
     <div className="space-y-2">
-      <div title="Technology stack used to build this application">
-        <Carousel />
-      </div>
       <div className="flex items-center justify-center space-x-2">
         <div className="flex flex-col items-center gap-6 mt-2">
           <Link
@@ -41,7 +55,7 @@ const LandingPage = () => {
           </p>
         </div>
       </div>
-      <TaskComponents />
+      <TaskComponents items={listItems}/>
     </div>
   );
 };

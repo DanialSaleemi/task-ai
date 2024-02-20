@@ -13,6 +13,7 @@ import {
   deleteItem,
   deleteAllItems,
 } from "@/utils/crud";
+import axios from "axios";
 
 export interface TaskItem {
   [x: string]: any;
@@ -30,23 +31,29 @@ export const BaseURL = process.env.NEXT_PUBLIC_VERCEL_URL
 
 // axios.defaults.withCredentials = true;
 
-const TaskComponents = () => {
+
+const TaskComponents = ( {items} : {items : TaskItem[]}) => {
   const [todos, setTodos] = useState<TaskItem[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState();
   // Fetch ToDo items on component mount
-  useEffect(() => {
-     fetchItems()
-      .then((response) => {
-        const sortedList = response.data.sort((a: { created_at: Date; }, b: { created_at: Date; }) => {
-          const dateA = new Date(a.created_at || 0);
-          const dateB = new Date(b.created_at || 0);
-          return dateB.getTime() - dateA.getTime();
-        });
-        setTodos(sortedList);
-      })
-      .catch((error) => console.error(error))
-      .finally(() => setIsLoading(false));
-  }, []);
+  // useEffect(() => {
+  //   const mountItems = () => {
+  //    fetchItems()
+  //     .then((response) => {
+  //       const sortedList = response.data.sort((a: { created_at: Date; }, b: { created_at: Date; }) => {
+  //         const dateA = new Date(a.created_at || 0);
+  //         const dateB = new Date(b.created_at || 0);
+  //         return dateB.getTime() - dateA.getTime();
+  //       });
+  //       setTodos(sortedList);
+  //     })
+  //     .catch((error) => console.error(error))
+  //     .finally(() => setIsLoading(false));
+  //   }
+  //   mountItems();
+  //   const intervalID = setInterval(mountItems, 15000);      // poll every 10 seconds to update the list
+  //   return () => clearInterval(intervalID);                 // Clear the interval on component unmount
+  // }, []);
 
   /**
    * Add a new item to the todos list.
@@ -68,7 +75,7 @@ const TaskComponents = () => {
     // update Loading state for the specified task
     setTodos(
       todos.map((todo) =>
-        todo.id === id ? { ...todo, isLoading: true } : todo
+        todo.id === id ? { ...todo, setIsLoading: true } : todo
       )
     );
     // find the task in the list
@@ -78,7 +85,7 @@ const TaskComponents = () => {
       console.error("No such task found");
       setTodos(
         todos.map((todo) =>
-          todo.id === id ? { ...todo, isLoading: false } : todo
+          todo.id === id ? { ...todo, setIsLoading: false } : todo
         )
       );
       return;
@@ -96,7 +103,7 @@ const TaskComponents = () => {
         setTodos(
           todos.map((todo) =>
             todo.id === id
-              ? { ...todo, completed: !todo.completed, isLoading: false }
+              ? { ...todo, completed: !todo.completed, setIsLoading: false }
               : todo
           )
         );
@@ -127,12 +134,12 @@ const handleDeleteAllItems = async () => {
   }
 };
 
-  const sortedList = todos.sort((a, b) => {
-    const dateA = new Date(a.created_at || 0);
-    const dateB = new Date(b.created_at || 0);
-    return dateB.getTime() - dateA.getTime();
-  });
-  console.log(sortedList);
+  // const sortedList = todos.sort((a, b) => {
+  //   const dateA = new Date(a.created_at || 0);
+  //   const dateB = new Date(b.created_at || 0);
+  //   return dateB.getTime() - dateA.getTime();
+  // });
+  // console.log(sortedList);
   return (
     <div className="flex items-center justify-center">
 
@@ -150,7 +157,7 @@ const handleDeleteAllItems = async () => {
 
       <div className="flex flex-col ">
         <div className=" space-y-4 py-6">
-          {sortedList.map((todo) => (
+          {items.map((todo) => (
             <div key={todo.id} className="flex space-x-6 items-center">
               <div
                 className={`flex basis-10/12 bg-gradient-to-l from-slate-300/30 to-slate-100/10 border-blue-200/20 text-lg text-[#333333] shadow-md border-2 rounded-md py-6 px-2 ${
