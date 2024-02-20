@@ -1,26 +1,9 @@
 import React from "react";
-import TaskComponents, { BaseURL, TaskItem } from "./taskcomponents";
 import Link from "next/link";
 import Image from "next/image";
-import axios from "axios";
-
-export async function getStaticProps() {
-  const backend_URL = process.env.NEXT_PUBLIC_VERCEL_URL
-    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api` ||
-      `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
-    : "http://localhost:3000/api";
-
-    try{
-    const response = await axios.get(`${backend_URL}/items`)
-      return {props : {data : response.data,}, revalidate : 25} //response.data
-    } catch {
-      console.error("Error fetching data");
-      return {props : {data : [[]],}, revalidate : 25}
-    }
-}
+import TaskComponents from "./taskcomponents";
 
 const LandingPage = async () => {
-  const listItems : TaskItem[] = (await getStaticProps()).props.data;
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-center space-x-2">
@@ -54,7 +37,7 @@ const LandingPage = async () => {
           </p>
         </div>
       </div>
-      <TaskComponents items = {listItems} />
+      <TaskComponents/>
     </div>
   );
 };

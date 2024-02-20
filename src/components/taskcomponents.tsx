@@ -29,31 +29,30 @@ export const BaseURL = process.env.NEXT_PUBLIC_VERCEL_URL
     `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
   : "http://localhost:3000/api";
 
-// axios.defaults.withCredentials = true;
 
 
-const TaskComponents = ( { items } : {items : TaskItem[]}) => {
+const TaskComponents = () => {
   const [todos, setTodos] = useState<TaskItem[]>([]);
-  const [isLoading, setIsLoading] = useState();
+  const [isLoading, setIsLoading] = useState(true);
   // Fetch ToDo items on component mount
-  // useEffect(() => {
-  //   const mountItems = () => {
-  //    fetchItems()
-  //     .then((response) => {
-  //       const sortedList = response.data.sort((a: { created_at: Date; }, b: { created_at: Date; }) => {
-  //         const dateA = new Date(a.created_at || 0);
-  //         const dateB = new Date(b.created_at || 0);
-  //         return dateB.getTime() - dateA.getTime();
-  //       });
-  //       setTodos(sortedList);
-  //     })
-  //     .catch((error) => console.error(error))
-  //     .finally(() => setIsLoading(false));
-  //   }
-  //   mountItems();
-  //   const intervalID = setInterval(mountItems, 15000);      // poll every 10 seconds to update the list
-  //   return () => clearInterval(intervalID);                 // Clear the interval on component unmount
-  // }, []);
+  useEffect(() => {
+    const mountItems = () => {
+     fetchItems()
+      .then((response) => {
+        const sortedList = response.data.sort((a: { created_at: Date; }, b: { created_at: Date; }) => {
+          const dateA = new Date(a.created_at || 0);
+          const dateB = new Date(b.created_at || 0);
+          return dateB.getTime() - dateA.getTime();
+        });
+        setTodos(sortedList);
+      })
+      .catch((error) => console.error(error))
+      .finally(() => setIsLoading(false));
+    }
+    mountItems();
+    const intervalID = setInterval(mountItems, 15000);      // poll every 10 seconds to update the list
+    return () => clearInterval(intervalID);                 // Clear the interval on component unmount
+  }, []);
 
   /**
    * Add a new item to the todos list.
@@ -157,7 +156,7 @@ const handleDeleteAllItems = async () => {
 
       <div className="flex flex-col ">
         <div className=" space-y-4 py-6">
-          {items.map((todo) => (
+          {todos.map((todo) => (
             <div key={todo.id} className="flex space-x-6 items-center">
               <div
                 className={`flex basis-10/12 bg-gradient-to-l from-slate-300/30 to-slate-100/10 border-blue-200/20 text-lg text-[#333333] shadow-md border-2 rounded-md py-6 px-2 ${
