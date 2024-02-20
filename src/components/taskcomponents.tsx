@@ -32,7 +32,7 @@ export const BaseURL = process.env.NEXT_PUBLIC_VERCEL_URL
 // axios.defaults.withCredentials = true;
 
 
-const TaskComponents = ( {items} : {items : TaskItem[]}) => {
+const TaskComponents = ( { items } : {items : TaskItem[]}) => {
   const [todos, setTodos] = useState<TaskItem[]>([]);
   const [isLoading, setIsLoading] = useState();
   // Fetch ToDo items on component mount

@@ -1,21 +1,32 @@
 import React from "react";
-import TaskComponents, { TaskItem } from "./taskcomponents";
+import TaskComponents, { BaseURL, TaskItem } from "./taskcomponents";
 import Link from "next/link";
 import Image from "next/image";
 import axios from "axios";
 
-async function getStaticProps() {
+export async function getStaticProps() {
   const backend_URL = process.env.NEXT_PUBLIC_VERCEL_URL
     ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api` ||
       `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
     : "http://localhost:3000/api";
-  const { data } = await axios.get(`${backend_URL}/items`);
 
-  return { props: { data }, revalidate: 25 };
+
+    const data = axios.get(`${backend_URL}/items`)
+    .then((response) => {
+      console.log(response.data)
+      return {props : {data : response.data,}, revalidate : 25} //response.data
+
+    })    
+    .catch((error) => console.error(error));
+    return {props : {data : []}, revalidate : 25}
+
+    // return { props : {data,}, revalidate : 25}
+
+  // const data = {mock : "data"};
 }
 
 const LandingPage = async () => {
-  const listItems = (await getStaticProps()).props.data;
+  const listItems : TaskItem[] = (await getStaticProps()).props.data;
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-center space-x-2">
@@ -49,7 +60,7 @@ const LandingPage = async () => {
           </p>
         </div>
       </div>
-      <TaskComponents items={listItems} />
+      <TaskComponents items = {listItems} />
     </div>
   );
 };
