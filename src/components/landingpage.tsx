@@ -15,7 +15,7 @@ export async function getStaticProps() {
       return {props : {data : response.data,}, revalidate : 25} //response.data
     } catch {
       console.error("Error fetching data");
-      return {props : {data : [],}, revalidate : 25}
+      return {props : {data : [[]],}, revalidate : 25}
     }
 }
 
