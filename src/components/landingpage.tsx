@@ -10,19 +10,8 @@ export async function getStaticProps() {
       `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
     : "http://localhost:3000/api";
 
-
-    const data = axios.get(`${backend_URL}/items`)
-    .then((response) => {
-      console.log(response.data)
+    const response = await axios.get(`${backend_URL}/items`)
       return {props : {data : response.data,}, revalidate : 25} //response.data
-
-    })    
-    .catch((error) => console.error(error));
-    return {props : {data : []}, revalidate : 25}
-
-    // return { props : {data,}, revalidate : 25}
-
-  // const data = {mock : "data"};
 }
 
 const LandingPage = async () => {
