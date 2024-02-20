@@ -50,7 +50,7 @@ const TaskComponents = () => {
       .finally(() => setIsLoading(false));
     }
     mountItems();
-    const intervalID = setInterval(mountItems, 15000);      // poll every 10 seconds to update the list
+    const intervalID = setInterval(mountItems, 15000);      // poll every 15 seconds to update the list
     return () => clearInterval(intervalID);                 // Clear the interval on component unmount
   }, []);
 
@@ -133,12 +133,7 @@ const handleDeleteAllItems = async () => {
   }
 };
 
-  // const sortedList = items.sort((a, b) => {
-  //   const dateA = new Date(a.created_at || 0);
-  //   const dateB = new Date(b.created_at || 0);
-  //   return dateB.getTime() - dateA.getTime();
-  // });
-  // console.log(sortedList);
+
   return (
     <div className="flex items-center justify-center">
 
@@ -154,7 +149,7 @@ const handleDeleteAllItems = async () => {
 
       {/* <AddTask onAdd={handleAddItem} /> */}
 
-      <div className="flex flex-col ">
+      <div className="flex flex-col">
         <div className=" space-y-4 py-6">
           {todos.map((todo) => (
             <div key={todo.id} className="flex space-x-6 items-center">

@@ -30,7 +30,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={mat.className}>
-        <div className="min-h-screen bg-gradient-to-r from-white to-blue-100">
+        <div className="min-h-screen bg-gradient-to-r px-2 from-white to-blue-100">
           <Carousel/>
           {children}
 
