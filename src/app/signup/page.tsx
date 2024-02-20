@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import React from 'react'
 
-export const Register = () => {
+const Register = () => {
   return (
     <div className="flex items-center justify-center mt-10 h-2/3">
       <div className=" bg-blue-200/30 z-50 shadow-2xl w-80 max-w-96 min-w-72 h-full rounded-sm">
