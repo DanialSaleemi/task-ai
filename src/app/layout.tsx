@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
+import Carousel from "@/components/stackcarousel";
 
 // const inter = Inter({ subsets: ["latin"] });
 // const roboto = Roboto_Serif({ subsets: ['latin'] })
@@ -29,7 +30,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={mat.className}>
+        <div className="min-h-screen bg-gradient-to-r from-white to-blue-100">
+          <Carousel/>
           {children}
+
+        </div>
       </body>
     </html>
   );
