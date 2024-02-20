@@ -6,22 +6,16 @@ import axios from "axios";
 
 async function getStaticProps() {
   const backend_URL = process.env.NEXT_PUBLIC_VERCEL_URL
-  ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api` ||
-    `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
-  : "http://localhost:3000/api";
-  const { data } = await axios.get(`${backend_URL}/items`)
-  const sortedList : TaskItem[] = data.sort((a : TaskItem, b : TaskItem) => {
-    const dateA = new Date(a.created_at || 0);
-    const dateB = new Date(b.created_at || 0);
-    return dateB.getTime() - dateA.getTime();
-  });
-  return { props: { items : sortedList, },
-revalidate: 25 };
-} 
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api` ||
+      `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
+    : "http://localhost:3000/api";
+  const { data } = await axios.get(`${backend_URL}/items`);
+
+  return { props: { data }, revalidate: 25 };
+}
 
 const LandingPage = async () => {
-
-const listItems = (await getStaticProps()).props.items;
+  const listItems = (await getStaticProps()).props.data;
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-center space-x-2">
@@ -55,7 +49,7 @@ const listItems = (await getStaticProps()).props.items;
           </p>
         </div>
       </div>
-      <TaskComponents items={listItems}/>
+      <TaskComponents items={listItems} />
     </div>
   );
 };

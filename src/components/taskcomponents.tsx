@@ -134,12 +134,12 @@ const handleDeleteAllItems = async () => {
   }
 };
 
-  // const sortedList = todos.sort((a, b) => {
-  //   const dateA = new Date(a.created_at || 0);
-  //   const dateB = new Date(b.created_at || 0);
-  //   return dateB.getTime() - dateA.getTime();
-  // });
-  // console.log(sortedList);
+  const sortedList = items.sort((a, b) => {
+    const dateA = new Date(a.created_at || 0);
+    const dateB = new Date(b.created_at || 0);
+    return dateB.getTime() - dateA.getTime();
+  });
+  console.log(sortedList);
   return (
     <div className="flex items-center justify-center">
 
@@ -157,7 +157,7 @@ const handleDeleteAllItems = async () => {
 
       <div className="flex flex-col ">
         <div className=" space-y-4 py-6">
-          {items.map((todo) => (
+          {sortedList.map((todo) => (
             <div key={todo.id} className="flex space-x-6 items-center">
               <div
                 className={`flex basis-10/12 bg-gradient-to-l from-slate-300/30 to-slate-100/10 border-blue-200/20 text-lg text-[#333333] shadow-md border-2 rounded-md py-6 px-2 ${
