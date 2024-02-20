@@ -10,8 +10,13 @@ export async function getStaticProps() {
       `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}/api`
     : "http://localhost:3000/api";
 
+    try{
     const response = await axios.get(`${backend_URL}/items`)
       return {props : {data : response.data,}, revalidate : 25} //response.data
+    } catch {
+      console.error("Error fetching data");
+      return {props : {data : [],}, revalidate : 25}
+    }
 }
 
 const LandingPage = async () => {
