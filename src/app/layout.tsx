@@ -33,6 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+      <meta name="google-site-verification" content="EERPiW54eKR-x1lRaNVxrgbA8SSxTLT0CXpCvMjGT4Y" />
+      </head>
       <body className={mat.className}>
         <div className="min-h-screen bg-gradient-to-r px-2 from-white to-blue-100">
           <Carousel/>
