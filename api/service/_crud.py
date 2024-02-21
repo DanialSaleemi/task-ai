@@ -1,4 +1,3 @@
-from typing import Awaitable
 from fastapi import HTTPException, status
 from api.data._db_config import engine
 from sqlmodel import Session, select
@@ -70,7 +69,7 @@ Service to call get_single_item function and returns a Task object.
 
 
 #create a task
-async def create_task(db: Session, task: CreateTask) -> Task:
+def create_task(db: Session, task: CreateTask, user_id : UUID) -> Task:
     """
 Creates a new item in the specified database session and returns the created Task object.
 
@@ -82,7 +81,7 @@ Returns:
 - task: Task -- The created Task object.
 """
     try:
-        new_task = Task(**task.model_dump())        
+        new_task = Task(title=task.title, description=task.description, user_id=user_id)        
         db.add(new_task)
         db.commit()
         return new_task
@@ -93,13 +92,13 @@ Returns:
         raise
 
 #create a task service
-async def create_task_service(db: Session, task: CreateTask) -> Task:
+def create_task_service(db: Session, task: CreateTask, user_id : UUID) -> Task:
     """
 Service to call create_task function and returns a Task object.
 
     """
     try:
-        new_task : Task = await create_task(db, task)
+        new_task : Task = create_task(db, task, user_id)
         return Task.model_validate(new_task)
     except Exception as e:
         print(f"Error creating task: {e}")
