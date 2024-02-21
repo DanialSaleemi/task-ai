@@ -50,7 +50,7 @@ const TaskComponents = () => {
       .finally(() => setIsLoading(false));
     }
     mountItems();
-    const intervalID = setInterval(mountItems, 15000);      // poll every 15 seconds to update the list
+    const intervalID = setInterval(mountItems, 10000);      // poll every 15 seconds to update the list
     return () => clearInterval(intervalID);                 // Clear the interval on component unmount
   }, []);
 
