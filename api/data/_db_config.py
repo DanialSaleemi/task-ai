@@ -23,7 +23,7 @@ def create_tables():
 
 SessionLocal = Session(bind=engine, autocommit=False, autoflush=False)
 
-def get_db()->Session:
+def get_db()->Session: # type: ignore
     attempts : int = 0
     max_attempts : int = 5
     retry_delay : int = 2
