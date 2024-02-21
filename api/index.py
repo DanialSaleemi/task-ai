@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from api.data._db_config import get_db, create_tables, DB_URL
 from api._models import *
 from api.service._crud import *
+from api.service._auth import *
 
 from sqlmodel import Session, select
 
@@ -38,6 +39,7 @@ app.add_middleware(
 
 
 dbDependency = Annotated[Session, Depends(get_db)]
+userDependency = Annotated[Users, Depends(get_user)]
 
 @app.get('/api/health', tags=["Health Check"])
 def health_check():
@@ -54,8 +56,8 @@ def health_check():
 
 
 # Route to create a new task item
-@app.post("/api/items", status_code=201, response_model=Task, tags=["Task CRUD"])
-async def create_item(task: CreateTask, db: dbDependency):
+@app.post("/api/items", status_code=201, response_model=TaskResponse, tags=["Task CRUD"])
+def create_item(task: CreateTask, user : Users, db: dbDependency ) -> Task:
     """
     Create a new item in the database.
 
@@ -70,8 +72,10 @@ async def create_item(task: CreateTask, db: dbDependency):
     - HTTPException with status code
     """
     try:
+        if user.id is None:
+            raise HTTPException(status_code=400, detail="User not found")        
         # Call the create_task_service function with the given database session and task
-        return await create_task_service(db, task)
+        return create_task_service(db, task, user_id=user.id)
     except Exception as e:
         # If an exception occurs, raise an HTTPException with status code 500 and the exception message
         raise HTTPException(status_code=500, detail=str(e))
@@ -179,6 +183,92 @@ def delete_all_items(db: dbDependency) -> str:
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+
+@app.post("/api/users", tags=["User Authentication"])
+async def user_signup(db: dbDependency, user: RegisterUser):
+    """
+    Create a new user in the database.
+
+    Parameters:
+    - user: RegisterUser - An instance of RegisterUser.
+
+    Returns:
+    - The result of creating the user.
+
+    Raises:
+    - HTTPException with status code
+    """
+    try:
+        return service_signup_user(db, user)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+# get single user by its username    
+@app.get("/api/users/{username}", response_model=User, tags=["User Authentication"])
+async def get_user_from_db(db: dbDependency, username: str):
+    """
+    Get a user by username from the database.
+
+    Parameters:
+    - username: str - The username of the user.
+
+    Returns:
+    - The result of the get user service.
+
+    Raises:
+    - HTTPException with status code
+    """
+    try:
+        return await get_user(db, username)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+# get all users
+@app.get("/api/users", tags=["User Authentication"])
+async def get_all_users_from_db(db:dbDependency) -> list[User]:
+    """
+    Get all users from the database.
+    
+    Parameters:
+    - db : dbDependency - The database dependency.
+    
+    Returns:
+    - List of all users.
+
+    Raises:
+    - HttpException with status code
+    """
+
+    try:
+        return await service_get_all_users(db)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+@app.patch("/api/users/{username}", tags=["User Authentication"])
+async def update_user(db: dbDependency, username: str, user: UpdateUser) -> User:
+    """
+    Update a user in the database.
+
+    Parameters:
+    - db: dbDependency - The database dependency.
+    - username: str - The username of the user to be updated.
+    - user: UpdateUser - The updated user information.
+
+    Returns:
+    - User: The updated user.
+
+    Raises:
+    - HTTPException with status code
+    """
+    try:
+        return await service_update_user(db, username, user)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 def main():

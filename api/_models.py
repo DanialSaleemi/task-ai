@@ -65,10 +65,14 @@ class User(SQLModel):
     email: Optional[str]
     username: Optional[str]
     full_name: Optional[str]
-    email_verified:Optional[bool]
 
 class RegisterUser(User):
     password: str
+
+class UpdateUser(SQLModel):
+    full_name: Optional[str]
+    password: Optional[str]
+
 
 class UserInDB(User):
     id : UUID
