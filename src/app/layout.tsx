@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   keywords: `TaskGenius AI, AI task management, productivity tool, automate tasks, efficient workflow, CRUD operations, real-time updates, user-friendly interface, advanced AI, CustomGPT, LLM, task automation.`,
   other: {
     name: "google-site-verification",
-    content: "google6af01284f4b019e0.html",
-  }
+    content: "EERPiW54eKR-x1lRaNVxrgbA8SSxTLT0CXpCvMjGT4Y",
+  },
 };
 
 export default function RootLayout({
