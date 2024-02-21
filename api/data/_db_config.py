@@ -9,7 +9,7 @@ import time
 
 _ : bool = load_dotenv(find_dotenv())
 
-DB_URL = os.environ.get("DATABASE_URL")
+DB_URL = os.environ.get("DATABASE_URL_PROD")
 
 if DB_URL is None:
     raise Exception("DB_URL not found")
